@@ -1,0 +1,24 @@
+{
+  "name": "legendary-memory-yar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewmcelvey2/legendary-memory-yar.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/andrewmcelvey2/legendary-memory-yar/issues"
+  },
+  "homepage": "https://github.com/andrewmcelvey2/legendary-memory-yar#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
