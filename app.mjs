@@ -3,7 +3,7 @@ import express from 'express'
 const app = express()
 
 app.get('/', (req, res) => {
-  res.send('Hello World | <a href="https://github.com/andrewmcelvey2/legendary-memory-yar" target="blank">legendary-memory-yar | dev</a>')
+  res.send('Hello World | Final Test from dev branch <a href="https://github.com/andrewmcelvey2/legendary-memory-yar" target="blank">legendary-memory-yar</a>')
 })
 
 app.listen(3000, () => {
