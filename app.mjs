@@ -49,6 +49,7 @@ async function run() {
 
 // middlewares aka endpoints aka 'get to slash' {http verb} to slash {you name ur endpoint}
 app.get('/', (req, res) => {
+
   // res.send('Hello Express'); //string response
   // res.sendFile('index.html'); // <- this don't work w/o imports, assign, and arguements
   res.sendFile(join(__dirname, 'public', 'attend.html'));
@@ -66,6 +67,9 @@ app.get('/inject', (req, res) => {
     .catch(err => {
       res.status(500).send('Error loading page');
     });
+
+  res.send('Hello World | Final Test to ci/cd <a href="https://github.com/andrewmcelvey2/legendary-memory-yar" target="blank">legendary-memory-yar</a>')
+
 })
 
 // API Health/Endpoints Documentation
