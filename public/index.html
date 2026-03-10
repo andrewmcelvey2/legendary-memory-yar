@@ -1,273 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CIS 486 - Attendance Tracker</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-    .container {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    h1, h2 {
-      color: #333;
-    }
-    .class-info {
-      background: #e8f4fd;
-      border-left: 4px solid #2196F3;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 16px;
-    }
-    button {
-      background: #2196F3;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-right: 10px;
-    }
-    button:hover {
-      background: #1976D2;
-    }
-    .delete-btn {
-      background: #f44336;
-    }
-    .delete-btn:hover {
-      background: #d32f2f;
-    }
-    .edit-btn {
-      background: #ff9800;
-    }
-    .edit-btn:hover {
-      background: #f57c00;
-    }
-    .message {
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 4px;
-    }
-    .success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    .error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-    .record {
-      background: #f8f9fa;
-      padding: 10px;
-      margin: 5px 0;
-      border-radius: 4px;
-      border: 1px solid #dee2e6;
-    }
-    #attendanceList {
-      max-height: 400px;
-      overflow-y: auto;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quebec Mini App</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+
+    <style>
+        #gameArea {
+            height: 350px;
+            border: 2px solid #ccc;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        #target {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            position: absolute;
+            display: none;
+        }
+    </style>
+
 </head>
+
 <body>
-  <!-- Class Information Section -->
-  <div class="container class-info">
-    <h1>Class Information</h1>
-    <div id="classInfo">Loading class information...</div>
-  </div>
 
-  <!-- Attendance Form -->
-  <div class="container">
-    <h2>Student Attendance</h2>
-    <div id="message"></div>
-    
-    <form id="attendanceForm">
-      <div class="form-group">
-        <label for="studentName">Student Name:</label>
-        <input type="text" id="studentName" required>
-      </div>
-      
-      <div class="form-group">
-        <label for="date">Today's Date:</label>
-        <input type="text" id="date" required placeholder="February 3, 2026">
-      </div>
-      
-      <div class="form-group">
-        <label for="keyword">Keyword from Board:</label>
-        <input type="text" id="keyword" required>
-      </div>
-      
-      <button type="submit">Record Attendance</button>
-      <button type="button" onclick="loadAttendance()">Refresh List</button>
-    </form>
-  </div>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container">
+            <span class="navbar-brand">Reaction Challenge</span>
+        </div>
+    </nav>
 
-  <!-- Attendance Records -->
-  <div class="container">
-    <h2>Attendance Records</h2>
-    <div id="attendanceList">Loading attendance records...</div>
-  </div>
+    <header class="container text-center mt-4">
+        <h1>Reaction Challenge</h1>
+        <p>Click the target before time runs out. Each round gets faster.</p>
+    </header>
 
-  <script>
-    let editingId = null;
+    <main class="container my-4">
 
-    // Load class information on page load
-    async function loadClassInfo() {
-      try {
-        const response = await fetch('/api/class');
-        const classData = await response.json();
-        
-        document.getElementById('classInfo').innerHTML = `
-          <h3>${classData.courseNumber} - ${classData.courseName}</h3>
-          <p><strong>Nickname:</strong> ${classData.nickname}</p>
-          <p><strong>Semester:</strong> ${classData.semester}</p>
-          <p><strong>Calendar:</strong> ${classData.calendar}</p>
-        `;
-      } catch (error) {
-        document.getElementById('classInfo').innerHTML = 'Error loading class information';
-      }
-    }
+        <div class="row">
 
-    // Handle form submission
-    document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const studentName = document.getElementById('studentName').value;
-      const date = document.getElementById('date').value;
-      const keyword = document.getElementById('keyword').value;
+            <div class="col-md-8">
 
-      try {
-        const url = editingId ? `/api/attendance/${editingId}` : '/api/attendance';
-        const method = editingId ? 'PUT' : 'POST';
-        
-        const response = await fetch(url, {
-          method: method,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            studentName,
-            date,
-            keyword
-          })
-        });
+                <label class="form-label">Player Name</label>
+                <input id="playerName" class="form-control" placeholder="Enter your name">
 
-        const result = await response.json();
-        
-        if (response.ok) {
-          showMessage(result.message, 'success');
-          document.getElementById('attendanceForm').reset();
-          if (editingId) {
-            editingId = null;
-            document.querySelector('button[type="submit"]').textContent = 'Record Attendance';
-          }
-          loadAttendance();
-        } else {
-          showMessage(result.error, 'error');
-        }
-      } catch (error) {
-        showMessage('Error submitting form', 'error');
-      }
-    });
+                <br>
 
-    // Load attendance records
-    async function loadAttendance() {
-      try {
-        const response = await fetch('/api/attendance');
-        const records = await response.json();
-        
-        const listDiv = document.getElementById('attendanceList');
-        
-        if (records.length === 0) {
-          listDiv.innerHTML = '<p>No attendance records yet.</p>';
-          return;
+                <button id="startGame" class="btn btn-primary">Start Game</button>
+
+                <h4 class="mt-3">Score: <span id="scoreDisplay">0</span></h4>
+                <h6>Time Limit: <span id="timeDisplay">1500</span> ms</h6>
+
+                <div id="gameArea">
+                    <button id="target" class="btn btn-danger"></button>
+                </div>
+
+                <br>
+
+                <button id="submitScore" class="btn btn-success" disabled>Submit Score</button>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <h3>Leaderboard</h3>
+
+                <div id="leaderboard-container">
+                    Scores will load here
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="text-center bg-light py-3">
+        <small>Reaction Game Mini App</small>
+    </footer>
+
+    <script>
+
+        let score = 0
+        let timeLimit = 1500
+        let gameActive = false
+        let timeoutID
+
+        const startBtn = document.getElementById("startGame")
+        const target = document.getElementById("target")
+        const scoreDisplay = document.getElementById("scoreDisplay")
+        const timeDisplay = document.getElementById("timeDisplay")
+        const gameArea = document.getElementById("gameArea")
+        const submitBtn = document.getElementById("submitScore")
+
+        startBtn.addEventListener("click", startGame)
+        target.addEventListener("click", targetClicked)
+
+        function startGame() {
+
+            score = 0
+            timeLimit = 1500
+            gameActive = true
+
+            scoreDisplay.textContent = score
+            timeDisplay.textContent = timeLimit
+
+            submitBtn.disabled = true
+
+            spawnTarget()
+
         }
 
-        listDiv.innerHTML = records.map(record => `
-          <div class="record">
-            <strong>${record.studentName}</strong> - ${record.date}<br>
-            <small>Keyword: ${record.keyword} | Recorded: ${new Date(record.timestamp).toLocaleString()}</small><br>
-            <button class="edit-btn" onclick="editRecord('${record._id}', '${record.studentName}', '${record.date}', '${record.keyword}')">Edit</button>
-            <button class="delete-btn" onclick="deleteRecord('${record._id}')">Delete</button>
-          </div>
-        `).join('');
-      } catch (error) {
-        document.getElementById('attendanceList').innerHTML = 'Error loading attendance records';
-      }
-    }
+        function spawnTarget() {
 
-    // Edit record
-    function editRecord(id, studentName, date, keyword) {
-      editingId = id;
-      document.getElementById('studentName').value = studentName;
-      document.getElementById('date').value = date;
-      document.getElementById('keyword').value = keyword;
-      document.querySelector('button[type="submit"]').textContent = 'Update Attendance';
-      showMessage('Editing record - click Update to save changes', 'success');
-    }
+            if (!gameActive) return
 
-    // Delete record
-    async function deleteRecord(id) {
-      if (!confirm('Are you sure you want to delete this record?')) return;
-      
-      try {
-        const response = await fetch(`/api/attendance/${id}`, {
-          method: 'DELETE'
-        });
+            const maxX = gameArea.clientWidth - 70
+            const maxY = gameArea.clientHeight - 70
 
-        const result = await response.json();
-        
-        if (response.ok) {
-          showMessage(result.message, 'success');
-          loadAttendance();
-        } else {
-          showMessage(result.error, 'error');
+            const x = Math.random() * maxX
+            const y = Math.random() * maxY
+
+            target.style.left = x + "px"
+            target.style.top = y + "px"
+
+            target.style.display = "block"
+
+            timeoutID = setTimeout(endGame, timeLimit)
+
         }
-      } catch (error) {
-        showMessage('Error deleting record', 'error');
-      }
-    }
 
-    // Show message
-    function showMessage(text, type) {
-      const messageDiv = document.getElementById('message');
-      messageDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
-      setTimeout(() => {
-        messageDiv.innerHTML = '';
-      }, 3000);
-    }
+        function targetClicked() {
 
-    // Initialize page
-    loadClassInfo();
-    loadAttendance();
+            if (!gameActive) return
 
-    // Set today's date as default
-    document.getElementById('date').value = 'February 3, 2026';
-  </script>
+            clearTimeout(timeoutID)
+
+            score++
+            timeLimit = Math.max(400, timeLimit - 100)
+
+            scoreDisplay.textContent = score
+            timeDisplay.textContent = timeLimit
+
+            spawnTarget()
+
+        }
+
+        function endGame() {
+
+            gameActive = false
+            target.style.display = "none"
+
+            alert("Game Over! Score: " + score)
+
+            submitBtn.disabled = false
+
+        }
+
+        submitBtn.addEventListener("click", submitScore)
+
+        async function submitScore() {
+
+            const name = document.getElementById("playerName").value
+
+            if (!name) {
+                alert("Enter your name")
+                return
+            }
+
+            const scoreData = {
+                playerName: name,
+                score: score
+            }
+
+            await fetch('/api/scores', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(scoreData)
+            })
+
+            loadScores()
+
+        }
+
+        async function loadScores() {
+
+            const res = await fetch('/api/scores')
+            const scores = await res.json()
+
+            let html = "<ul class='list-group'>"
+
+            scores.forEach(s => {
+
+                html += `<li class="list-group-item">
+${s.playerName} - ${s.score}
+</li>`
+
+            })
+
+            html += "</ul>"
+
+            document.getElementById("leaderboard-container").innerHTML = html
+
+        }
+
+        loadScores()
+
+    </script>
+
 </body>
+
 </html>
